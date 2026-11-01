@@ -1,0 +1,15 @@
+{% extends "admin/layout.html" %}
+{% block title %}Log in{% endblock %}
+{% block content %}
+<section class="login-box">
+  <h1>Owner log in</h1>
+  <form method="post" class="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required autofocus>
+    </div>
+    <button class="btn" type="submit">Log in</button>
+  </form>
+</section>
+{% endblock %}

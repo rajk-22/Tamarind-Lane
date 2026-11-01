@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Contact | {{ restaurant.name }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <h1>Get in touch</h1>
+  <p class="lead">Questions about private dining, allergies or large groups? Write to us or call.</p>
+</section>
+
+<section class="two-col">
+  <div class="info">
+    <h2>Visit</h2>
+    <p>{% for line in restaurant.address_lines %}{{ line }}<br>{% endfor %}
+       <a href="{{ restaurant.maps_url }}" target="_blank" rel="noopener">Open in Maps</a></p>
+    <h2>Call or write</h2>
+    <p><a href="tel:{{ restaurant.phone|replace(' ', '') }}">{{ restaurant.phone }}</a><br>
+       <a href="mailto:{{ restaurant.email }}">{{ restaurant.email }}</a></p>
+    <h2>Hours</h2>
+    <dl class="hours">{% for day, time in hours %}<dt>{{ day }}</dt><dd>{{ time }}</dd>{% endfor %}</dl>
+  </div>
+
+  <form method="post" class="form" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <div class="hp" aria-hidden="true"><label>Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
+
+    <div class="field {{ 'has-error' if errors.name }}">
+      <label for="name">Your name</label>
+      <input id="name" name="name" value="{{ values.name or '' }}" autocomplete="name" required>
+      {% if errors.name %}<p class="error">{{ errors.name }}</p>{% endif %}
+    </div>
+    <div class="field {{ 'has-error' if errors.email }}">
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" value="{{ values.email or '' }}" autocomplete="email" required>
+      {% if errors.email %}<p class="error">{{ errors.email }}</p>{% endif %}
+    </div>
+    <div class="field {{ 'has-error' if errors.body }}">
+      <label for="body">Message</label>
+      <textarea id="body" name="body" rows="5" required>{{ values.body or '' }}</textarea>
+      {% if errors.body %}<p class="error">{{ errors.body }}</p>{% endif %}
+    </div>
+    <button class="btn" type="submit">Send message</button>
+  </form>
+</section>
+{% endblock %}

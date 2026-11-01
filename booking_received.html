@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Booking received | {{ restaurant.name }}{% endblock %}
+{% block content %}
+<section class="page-head narrow">
+  <h1>Thanks, {{ booking.name.split()[0] }}. We've got your request.</h1>
+  <p class="lead">We'll email {{ booking.email }} once your table is confirmed, usually within a few hours.</p>
+</section>
+<section class="receipt">
+  <dl>
+    <dt>Reference</dt><dd>{{ booking.reference }}</dd>
+    <dt>Date</dt><dd>{{ booking.date|fmt_date }}</dd>
+    <dt>Time</dt><dd>{{ booking.time|fmt_time }}</dd>
+    <dt>Guests</dt><dd>{{ booking.guests }}</dd>
+    <dt>Status</dt><dd>{{ booking.status|capitalize }}</dd>
+  </dl>
+  <p>Need to change something? Call <a href="tel:{{ restaurant.phone|replace(' ', '') }}">{{ restaurant.phone }}</a> and quote your reference.</p>
+  <p><a class="btn btn-ghost" href="{{ url_for('home') }}">Back to home</a></p>
+</section>
+{% endblock %}

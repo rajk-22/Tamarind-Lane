@@ -1,0 +1,17 @@
+{% extends "admin/layout.html" %}
+{% block title %}Messages{% endblock %}
+{% block content %}
+<h1>Messages</h1>
+{% if messages %}
+<ul class="message-list">
+  {% for m in messages %}
+  <li>
+    <p><strong>{{ m.name }}</strong> · <a href="mailto:{{ m.email }}">{{ m.email }}</a> <span class="muted">{{ m.created_at.strftime('%d %b %Y, %H:%M') }} UTC</span></p>
+    <p>{{ m.body }}</p>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="muted">No messages yet.</p>
+{% endif %}
+{% endblock %}

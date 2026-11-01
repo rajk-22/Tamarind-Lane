@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}Book a table | {{ restaurant.name }}{% endblock %}
+{% block description %}Reserve a table at Tamarind Lane in Indiranagar, Bengaluru. Choose a date and time and we'll confirm by email.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <h1>Book a table</h1>
+  <p class="lead">Choose a date and we'll show the times that are free. We confirm every booking by email.</p>
+</section>
+
+<section class="two-col">
+  <form method="post" class="form" id="booking-form" novalidate>
+    <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <div class="hp" aria-hidden="true"><label>Leave this empty <input name="website" tabindex="-1" autocomplete="off"></label></div>
+
+    <div class="row">
+      <div class="field {{ 'has-error' if errors.date }}">
+        <label for="date">Date</label>
+        <input id="date" name="date" type="date" min="{{ min_date }}" max="{{ max_date }}" value="{{ values.date or '' }}" required>
+        {% if errors.date %}<p class="error">{{ errors.date }}</p>{% endif %}
+      </div>
+      <div class="field {{ 'has-error' if errors.guests }}">
+        <label for="guests">Guests</label>
+        <select id="guests" name="guests">
+          {% for n in party_sizes %}<option value="{{ n }}" {{ 'selected' if values.guests == n|string }}>{{ n }} {{ 'guest' if n == 1 else 'guests' }}</option>{% endfor %}
+        </select>
+        {% if errors.guests %}<p class="error">{{ errors.guests }}</p>{% endif %}
+      </div>
+    </div>
+
+    <fieldset class="field {{ 'has-error' if errors.time }}">
+      <legend>Time</legend>
+      <div id="slots" class="slots" data-selected="{{ values.time or '' }}"></div>
+      <p id="slot-hint" class="hint" aria-live="polite">Pick a date to see available times.</p>
+      <noscript><p class="error">Turn on JavaScript to choose a time, or call us on {{ restaurant.phone }}.</p></noscript>
+      {% if errors.time %}<p class="error">{{ errors.time }}</p>{% endif %}
+    </fieldset>
+
+    <div class="field {{ 'has-error' if errors.name }}">
+      <label for="name">Name</label>
+      <input id="name" name="name" value="{{ values.name or '' }}" autocomplete="name" required>
+      {% if errors.name %}<p class="error">{{ errors.name }}</p>{% endif %}
+    </div>
+    <div class="row">
+      <div class="field {{ 'has-error' if errors.email }}">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" value="{{ values.email or '' }}" autocomplete="email" required>
+        {% if errors.email %}<p class="error">{{ errors.email }}</p>{% endif %}
+      </div>
+      <div class="field {{ 'has-error' if errors.phone }}">
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" type="tel" value="{{ values.phone or '' }}" autocomplete="tel" required>
+        {% if errors.phone %}<p class="error">{{ errors.phone }}</p>{% endif %}
+      </div>
+    </div>
+    <div class="field {{ 'has-error' if errors.notes }}">
+      <label for="notes">Allergies or special requests <span class="optional">(optional)</span></label>
+      <textarea id="notes" name="notes" rows="3" maxlength="300">{{ values.notes or '' }}</textarea>
+      {% if errors.notes %}<p class="error">{{ errors.notes }}</p>{% endif %}
+    </div>
+    <button class="btn" type="submit">Request booking</button>
+  </form>
+
+  <aside class="info">
+    <h2>Good to know</h2>
+    <p>We hold tables for 15 minutes past the booking time.</p>
+    <p>Booking for more than {{ party_sizes|length }} guests? Call us on <a href="tel:{{ restaurant.phone|replace(' ', '') }}">{{ restaurant.phone }}</a>.</p>
+    <p>We're closed on Mondays.</p>
+    <h2>Hours</h2>
+    <dl class="hours">{% for day, time in hours %}<dt>{{ day }}</dt><dd>{{ time }}</dd>{% endfor %}</dl>
+  </aside>
+</section>
+{% endblock %}

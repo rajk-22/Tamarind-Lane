@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <div class="hero-text">
+    <p class="status-chip {{ 'open' if is_open else 'closed' }}"><span class="dot"></span>{{ status_text }}</p>
+    <h1>South Indian cooking, set to a new rhythm.</h1>
+    <p class="lead">Dosas that crackle, pepper roasts that take six hours, and filter coffee poured the old way. A small kitchen in Indiranagar, cooking the food we grew up on.</p>
+    <div class="actions">
+      <a class="btn" href="{{ url_for('book') }}">Book a table</a>
+      <a class="btn btn-ghost" href="{{ url_for('menu') }}">See the menu</a>
+    </div>
+  </div>
+  <div class="plate" role="img" aria-label="Decorative illustration of a dosa on a patterned plate"></div>
+</section>
+
+<section class="section">
+  <h2 class="section-title">What people order first</h2>
+  <ul class="signature">
+    {% for item in signature %}
+    <li>
+      <h3>{{ item.name }}</h3>
+      <p>{{ item.desc }}</p>
+      <p class="price">{{ item.price|inr }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+  <p><a class="text-link" href="{{ url_for('menu') }}">Read the full menu</a></p>
+</section>
+
+<section class="section split">
+  <div>
+    <h2 class="section-title">A kitchen that cooks from scratch</h2>
+    <p>Our batters ferment overnight. Our spice blends are roasted and ground each morning. Our curry leaves come from a farm outside Hosur, and our fish arrives from Mangaluru twice a week.</p>
+    <p>Nothing here is complicated. It's just done carefully, and served warm.</p>
+    <p><a class="text-link" href="{{ url_for('about') }}">Read our story</a></p>
+  </div>
+  <div class="mosaic">
+    {% for g in gallery %}
+      {% include "partials/tile.html" %}
+    {% endfor %}
+  </div>
+</section>
+
+<section class="band">
+  <div class="band-inner">
+    <div>
+      <h2>Tables fill up on weekends.</h2>
+      <p>Pick a date and time, and we'll confirm by email. It takes about a minute.</p>
+    </div>
+    <a class="btn btn-gold" href="{{ url_for('book') }}">Book a table</a>
+  </div>
+</section>
+{% endblock %}

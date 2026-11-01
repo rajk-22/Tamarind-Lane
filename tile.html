@@ -1,0 +1,6 @@
+<figure class="tile tone-{{ g.tone }}{% if g.wide %} wide{% endif %}">
+  {% if g.image %}
+    <img src="{{ url_for('static', filename='img/' + g.image) }}" alt="{{ g.caption }}" loading="lazy">
+  {% endif %}
+  <figcaption>{{ g.caption }}</figcaption>
+</figure>

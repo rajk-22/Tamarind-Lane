@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Gallery | {{ restaurant.name }}{% endblock %}
+{% block content %}
+<section class="page-head">
+  <h1>Gallery</h1>
+  <p class="lead">The food, the room and the people who make it.</p>
+</section>
+<section class="mosaic mosaic-full">
+  {% for g in gallery %}{% include "partials/tile.html" %}{% endfor %}
+</section>
+{% endblock %}

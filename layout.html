@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{% block title %}Admin{% endblock %} | {{ restaurant.name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="admin">
+  <header class="admin-bar">
+    <strong>{{ restaurant.name }} admin</strong>
+    {% if session.get('is_admin') %}
+    <nav>
+      <a href="{{ url_for('admin.bookings') }}">Bookings</a>
+      <a href="{{ url_for('admin.messages') }}">Messages</a>
+      <a href="{{ url_for('home') }}">View site</a>
+      <form method="post" action="{{ url_for('admin.logout') }}">
+        <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+        <button class="link-button">Log out</button>
+      </form>
+    </nav>
+    {% endif %}
+  </header>
+  <main class="admin-main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<p class="flash {{ category }}" role="status">{{ message }}</p>{% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

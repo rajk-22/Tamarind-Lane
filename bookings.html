@@ -1,0 +1,59 @@
+{% extends "admin/layout.html" %}
+{% block title %}Bookings{% endblock %}
+{% block content %}
+<h1>Bookings</h1>
+
+<div class="stats">
+  <div><span class="stat-num">{{ stats.pending }}</span><span>waiting for you</span></div>
+  <div><span class="stat-num">{{ stats.today }}</span><span>guests today</span></div>
+  <div><span class="stat-num">{{ stats.upcoming }}</span><span>upcoming bookings</span></div>
+</div>
+
+<form method="get" class="filter-bar">
+  <label>Status
+    <select name="status">
+      <option value="">All</option>
+      {% for s in statuses %}<option value="{{ s }}" {{ 'selected' if filters.get('status') == s }}>{{ s|capitalize }}</option>{% endfor %}
+    </select>
+  </label>
+  <label>Date <input type="date" name="date" value="{{ filters.get('date', '') }}"></label>
+  <label class="check"><input type="checkbox" name="past" value="1" {{ 'checked' if filters.get('past') == '1' }}> Include past</label>
+  <button class="btn btn-small" type="submit">Filter</button>
+  <a class="text-link" href="{{ url_for('admin.bookings') }}">Reset</a>
+  <a class="text-link push" href="{{ url_for('admin.export_csv', **filters) }}">Download CSV</a>
+</form>
+
+{% if bookings %}
+<div class="table-wrap">
+<table class="table">
+  <thead><tr><th>When</th><th>Guests</th><th>Guest</th><th>Notes</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody>
+  {% for b in bookings %}
+    <tr>
+      <td><strong>{{ b.date|fmt_date }}</strong><br>{{ b.time|fmt_time }}</td>
+      <td>{{ b.guests }}</td>
+      <td>{{ b.name }}<br><a href="tel:{{ b.phone }}">{{ b.phone }}</a><br><a href="mailto:{{ b.email }}">{{ b.email }}</a><br><span class="muted">{{ b.reference }}</span></td>
+      <td>{{ b.notes or '' }}</td>
+      <td><span class="badge {{ b.status }}">{{ b.status|capitalize }}</span></td>
+      <td class="row-actions">
+        {% for target, label in [('confirmed', 'Confirm'), ('cancelled', 'Cancel')] if b.status != target %}
+        <form method="post" action="{{ url_for('admin.set_status', booking_id=b.id) }}">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <input type="hidden" name="status" value="{{ target }}">
+          <button class="btn btn-small {{ 'btn-ghost' if target == 'cancelled' }}">{{ label }}</button>
+        </form>
+        {% endfor %}
+        <form method="post" action="{{ url_for('admin.delete_booking', booking_id=b.id) }}" onsubmit="return confirm('Delete this booking for good?')">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <button class="link-button danger">Delete</button>
+        </form>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% else %}
+<p class="muted">No bookings match. New requests appear here as soon as guests submit the form.</p>
+{% endif %}
+{% endblock %}

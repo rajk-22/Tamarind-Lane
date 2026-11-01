@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ restaurant.name }} | {{ restaurant.tagline }} in Indiranagar{% endblock %}</title>
+  <meta name="description" content="{% block description %}Modern South Indian cooking in Indiranagar, Bengaluru. See the menu and book a table online.{% endblock %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&family=Young+Serif&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <a class="logo" href="{{ url_for('home') }}">{{ restaurant.name }}</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="site-nav">Menu</button>
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      {% set ep = request.endpoint %}
+      <a href="{{ url_for('menu') }}" {% if ep == 'menu' %}aria-current="page"{% endif %}>Menu</a>
+      <a href="{{ url_for('gallery') }}" {% if ep == 'gallery' %}aria-current="page"{% endif %}>Gallery</a>
+      <a href="{{ url_for('about') }}" {% if ep == 'about' %}aria-current="page"{% endif %}>About</a>
+      <a href="{{ url_for('contact') }}" {% if ep == 'contact' %}aria-current="page"{% endif %}>Contact</a>
+      <a class="btn btn-small" href="{{ url_for('book') }}">Book a table</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <p class="flash {{ category }}" role="status">{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div>
+        <p class="logo">{{ restaurant.name }}</p>
+        <p>{{ restaurant.tagline }}.<br>Cooked fresh, every service.</p>
+      </div>
+      <div>
+        <h2>Find us</h2>
+        <p>{% for line in restaurant.address_lines %}{{ line }}<br>{% endfor %}
+          <a href="{{ restaurant.maps_url }}" target="_blank" rel="noopener">Get directions</a></p>
+        <p><a href="tel:{{ restaurant.phone|replace(' ', '') }}">{{ restaurant.phone }}</a><br>
+           <a href="mailto:{{ restaurant.email }}">{{ restaurant.email }}</a></p>
+      </div>
+      <div>
+        <h2>Opening hours</h2>
+        <dl class="hours">
+          {% for day, time in hours %}<dt>{{ day }}</dt><dd>{{ time }}</dd>{% endfor %}
+        </dl>
+      </div>
+    </div>
+    <p class="legal">© {{ year }} {{ restaurant.name }}. <a href="{{ restaurant.instagram }}" target="_blank" rel="noopener">Instagram</a></p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+</body>
+</html>

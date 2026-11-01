@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Menu | {{ restaurant.name }}{% endblock %}
+{% block description %}Dosas, pepper roasts, biryani, desserts and filter coffee. The full Tamarind Lane menu with prices.{% endblock %}
+{% block content %}
+<section class="page-head">
+  <h1>The menu</h1>
+  <p class="lead">Dishes are made to order, so some take a little longer. Tell us about allergies when you book.</p>
+  <p class="legend"><span class="tag">V</span> vegetarian <span class="tag">VG</span> vegan <span class="tag">GF</span> gluten-free</p>
+</section>
+
+<nav class="subnav" aria-label="Menu sections">
+  {% for group in menu %}<a href="#{{ group.category|lower|replace(' ', '-') }}">{{ group.category }}</a>{% endfor %}
+</nav>
+
+{% for group in menu %}
+<section class="menu-group" id="{{ group.category|lower|replace(' ', '-') }}">
+  <h2>{{ group.category }}</h2>
+  <ul class="menu-list">
+    {% for item in group["items"] %}
+    <li>
+      <div class="menu-row">
+        <h3>{{ item.name }}{% for t in item.tags %}<span class="tag" title="{{ {'V': 'Vegetarian', 'VG': 'Vegan', 'GF': 'Gluten-free'}[t] }}">{{ t }}</span>{% endfor %}</h3>
+        <span class="leader" aria-hidden="true"></span>
+        <span class="price">{{ item.price|inr }}</span>
+      </div>
+      <p>{{ item.desc }}</p>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endfor %}
+
+<section class="band">
+  <div class="band-inner">
+    <div><h2>Hungry already?</h2><p>Book a table and we'll have it ready.</p></div>
+    <a class="btn btn-gold" href="{{ url_for('book') }}">Book a table</a>
+  </div>
+</section>
+{% endblock %}
